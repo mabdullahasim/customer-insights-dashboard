@@ -12,23 +12,22 @@ const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
+  // Handles actual form submission
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // stop page reload
+    if (action === "Sign Up") {
+      console.log("Sign Up submitted:", { username, email, password });
+    } else {
+      console.log("Login submitted:", { email, password });
+    }
+  };
+
+  // Switches between Login and Sign Up forms
   const handleActionChange = (newAction: Action) => {
     setAction(newAction);
-    if(newAction == "Sign Up"){
-
-    }
-    // Clear inputs on action change if needed
     setUsername("");
     setEmail("");
     setPassword("");
-  };
-
-  const handleSubmit = () => {
-    if (action === "Sign Up") {
-      console.log("Sign Up Clicked", { username, email, password });
-    } else {
-      console.log("Login Clicked", { email, password });
-    }
   };
 
   return (
@@ -38,7 +37,9 @@ const Login = () => {
         <div className={styles.underline}></div>
       </div>
 
-      <div className={styles.inputs}>
+      {/* REAL FORM */}
+      <form className={styles.inputs} onSubmit={handleSubmit}>
+        {/* Username only for Sign Up */}
         {action === "Sign Up" && (
           <div className={styles.input}>
             <img src={user_icon} alt="user icon" />
@@ -47,6 +48,7 @@ const Login = () => {
               placeholder="Name"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              required
             />
           </div>
         )}
@@ -58,6 +60,7 @@ const Login = () => {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
         </div>
 
@@ -68,33 +71,35 @@ const Login = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
         </div>
-      </div>
 
-      <div className={styles["forgot-password"] }style={{ display: action === "Login" ? "block" : "none" }}>Forgot Password</div>
+        {/* Forgot Password only on Login */}
+        {action === "Login" && (
+          <div className={styles["forgot-password"]}>Forgot Password</div>
+        )}
 
-      <div className={styles["submit-container"]}>
-        <div
-          className={action === "Sign Up" ? `${styles.submit} ${styles.active}` : styles.submit}
-          onClick={() => {
-            handleActionChange("Sign Up");
-            handleSubmit();
-          }}
-        >
-          Sign Up
+        <div className={styles["submit-container"]}>
+          {/* Switch to Sign Up */}
+          <button
+            type="button"
+            className={action === "Sign Up" ? `${styles.submit} ${styles.active}` : styles.submit}
+            onClick={() => handleActionChange("Sign Up")}
+          >
+            Sign Up
+          </button>
+
+          {/* Submit Login */}
+          <button
+            type="submit"
+            className={action === "Login" ? `${styles.submit} ${styles.active}` : styles.submit}
+            onClick={() => handleActionChange("Login")}
+          >
+            Login
+          </button>
         </div>
-
-        <div
-          className={action === "Login" ? `${styles.submit} ${styles.active}` : styles.submit}
-          onClick={() => {
-            handleActionChange("Login");
-            handleSubmit();
-          }}
-        >
-          Login
-        </div>
-      </div>
+      </form>
     </div>
   );
 };
