@@ -2,29 +2,32 @@ import styles from "./Header.module.css";
 import {useState} from "react";
 
 type HeaderProps = { //blueprint that defines the prop
-    onSearch?: (query: string) => void; //onSearch is a functional prop that if passed should take a string (query) and return nothing
+    onSearch?: (query: string) => void; //onSearch is a functional prop, if passed, it takes a string (query) and return nothing
 }
 
-const Header = ({onSearch}: HeaderProps) => {   //recives the direct value of onSearch of type HeaderProps
-    const [query, setQuery] = useState("");
+const Header = ({onSearch}: HeaderProps) => { //recieves props of type HeaderProps and extracts onSearch
+    const [query, setQuery] = useState(""); //Local state for the search input value with in header page does not update to main component
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => { //function will run every time user tpyes into search bar
-        setQuery(e.target.value) //set query to value from event object passed from input
-        if (onSearch) onSearch(e.target.value); //if onSearch isnt undefined call onSearch
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => { //runs everytime user types in input
+        setQuery(e.target.value) //update local query state with the input value
+        if (onSearch) onSearch(e.target.value); //if parent (home) passed onSearch call it with the current input
     };
 
     return(
         <header className ={styles.header}>
-            <h1>Customer Insights</h1>
-            <div className={styles.searchBar}>
-                <input
+            <p>Hi, Abdullah</p>
+            <div className={styles.searchBarWrapper}>
+                <input className= {styles.searchBar}
                     type ="text"
                     value ={query}
-                    onChange={handleChange}
+                    onChange={handleChange} //calls handleChang with every keystroke
                     placeholder="Search..."
                 />
             </div>
-
+            <button className={styles.iconButton} >
+                <img  alt="User menu" />
+            </button>
+            
 
 
 
