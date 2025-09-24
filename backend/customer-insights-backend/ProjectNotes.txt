@@ -1,0 +1,171 @@
+1. main.py
+
+Entry point for your FastAPI app.
+
+Responsibilities:
+
+Initialize FastAPI instance.
+
+Include/register all API routers (auth, users, customers, analytics).
+
+Add middleware if needed (CORS, logging, etc.).
+
+Run app (development or production server).
+
+#################################################################################################
+
+
+2. core/ – foundational utilities
+a. config.py
+
+Store app-wide settings:
+
+Secret keys for JWT
+
+Database URLs
+
+Token expiration times
+
+Any environment-dependent variables
+
+b. database.py
+
+Create and manage the database connection.
+
+Provide session factory for routes to access DB.
+
+Initialize ORM base models.
+
+c. security.py
+
+Handle all security-related operations:
+
+Password hashing and verification
+
+JWT token creation and validation
+
+Optional helpers: role/permission checks, token refresh logic
+
+
+#################################################################################################
+
+3. models/ – database tables
+
+Define your database structure using ORM (e.g., SQLAlchemy).
+
+Files:
+
+user.py → DB fields for users (username, email, password hash, roles, etc.)
+
+customer.py → DB fields for customers (name, email, review, satisfaction score, timestamps)
+
+Optionally other models → e.g., analytics.py for precomputed metrics if needed
+
+Responsibility: Only define how data is stored, not how it’s sent to the frontend.
+
+
+#################################################################################################
+
+
+4. schemas/ – validation and serialization
+
+Define Pydantic models for input/output data in API.
+
+Files:
+
+user.py → UserCreate, UserRead, UserUpdate
+
+customer.py → CustomerCreate, CustomerRead
+
+Optionally analytics.py → AnalyticsRead for sending aggregated data to frontend
+
+Responsibility: Validate incoming data and control outgoing data shape.
+
+
+
+################################################################################################
+
+
+5. api/ – API routes
+
+Files:
+
+auth.py → Authentication routes
+
+Signup
+
+Login
+
+Token refresh (optional)
+
+Password reset/change
+
+users.py → User management routes
+
+Get user profile
+
+Update profile
+
+List users (admin)
+
+customers.py → Customer CRUD routes
+
+Add customers (via CSV or form)
+
+Get customer list
+
+Update customer info
+
+Delete customer (optional)
+
+analytics.py → Data aggregation routes
+
+Generate averages, trends, charts data
+
+Filtered data for frontend visualization
+
+Responsibility: Expose endpoints for frontend to interact with your backend.
+
+
+################################################################################################
+
+
+1. services/ – business logic
+
+Purpose: Handle complex operations that don’t belong directly in a route or model.
+
+Examples for your dashboard:
+
+UserService → encapsulates things like creating a user, updating password, checking roles.
+
+CustomerService → parsing CSV, storing multiple customer records, computing derived fields.
+
+AnalyticsService → aggregate data for charts, calculate averages, trends, satisfaction metrics.
+
+Key idea:
+
+Routes in api/ just call these service functions.
+
+Keeps endpoints thin and focused on request/response.
+
+
+################################################################################################
+
+
+2. utils/ – helper functions
+
+Purpose: Small, reusable helpers that don’t fit in services or core.
+
+Examples:
+
+File handling: save/upload CSVs, validate file type
+
+Data formatting: dates, numbers
+
+Miscellaneous helpers: generate random IDs, parse strings
+
+Difference from services/:
+
+services/ = business logic (core app functionality)
+
+utils/ = generic helpers that can be used anywh
