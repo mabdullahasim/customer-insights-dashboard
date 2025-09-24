@@ -16,6 +16,7 @@ Run app (development or production server).
 
 
 2. core/ – foundational utilities
+
 a. config.py
 
 Store app-wide settings:
@@ -169,3 +170,27 @@ Difference from services/:
 services/ = business logic (core app functionality)
 
 utils/ = generic helpers that can be used anywh
+
+
+
+
+modles is to represent how data is stored in the database
+    - user for creating tables, querying the database, inserting/updating rows.
+    - lives in models.
+    - this is only for the database you dont care about what yoou send to the front end helper
+    - each instance of user is like one row in your databse.
+
+schemas is to define how data should lok coming in from requests or going out in response
+    - used for validation, serialization, and esnuring only safe feilds are returned.
+    - UserCreate is used when creating a new user (from a post request)
+    - UserRead is used when sending user data to the client (get request)
+    - orm_mode = true allows you to take a SQLAlchemy object(user) and convert it into a pydnatic object (UserRead.from_orm(db_user))
+    - you can exclude sensitive data like hashed_password when returning data to the client
+
+    | Concept        | SQLAlchemy Model (models/)    | Pydantic Schema (schemas/)      |
+| -------------- | ----------------------------- | ------------------------------- |
+| Purpose        | Store data in DB              | Validate & shape API data       |
+| Example        | `User` table                  | `UserCreate`, `UserRead`        |
+| Sensitive info | All DB fields, incl password  | Only what’s safe to expose      |
+| Where used     | Database queries, ORM objects | API request/response validation |
+
