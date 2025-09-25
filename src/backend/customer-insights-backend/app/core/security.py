@@ -1,15 +1,14 @@
 from passlib.context import CryptContext
-from fastapi import FastAPI, status, Depends, HTTPException
-import models
-from typing import Annotated
-from sqlalchemy.orm import session
+from fastapi import status, Depends, HTTPException
+from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from datetime import datetime, timedelta
 from jose import JwtError, jwt
 from dotenv import load_dotenv
 import os
-
+import models
+from models.user import User
 load_dotenv()
 
 SECRET_KEY= os.getenv("SECRET_KEY")

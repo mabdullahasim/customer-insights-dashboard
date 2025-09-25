@@ -1,15 +1,11 @@
-from passlib.context import CryptContext
-from fastapi import FastAPI, status, Depends, HTTPException
+from fastapi import APIRouter, status, Depends, HTTPException
 import models
-from typing import Annotated
-from sqlalchemy.orm import session
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from pydantic import BaseModel
-from datetime import datetime, timedelta
-from jose import JwtError, jwt
+from fastapi.security import OAuth2PasswordRequestForm
+from datetime import timedelta
 from dotenv import load_dotenv
 import os
 
+load_dotenv()
 @app.post("/token", reponse_modeL=Token)
 async def login_for_acess_token(form_data: OAuth2PasswordRequestForm = Depends()): # Data accepted to generate a JWT is username and password, depending on data to parse
     user = authenticate_user(db, form_data.username, form_data.password)
@@ -25,5 +21,10 @@ async def login_for_acess_token(form_data: OAuth2PasswordRequestForm = Depends()
 
     return {"access_token": access_token, "token_type":"bearer"}
 
+@app.get("/users/me/", reponse_modeL=User)
+async def read_users_me(current_user: User = Depends(get_current_active_user)):
+    return current_user
 
-
+@app.get("/users/me/items")
+async def read_own_items(current_user: User = Depends(get_current_active_user)):
+    return [{"item_id" : 1, "owner" :current_user}]

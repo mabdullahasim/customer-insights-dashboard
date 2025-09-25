@@ -1,15 +1,15 @@
-from fastapi import FastAPI, status, Depends, HTTPException
-import models
-from typing import Annotated
-from sqlalchemy.orm import session
-from fastapi.sequrity import OAuth2PasswordBearer, OAuth2PasswordRequestFrom
-from pydantic import BaseModel
-from datetime import datetime, timedelta
-from jose import JwtError, jwt
+from fastapi import FastAPI
+from core.database import engine, Base
+from api import auth
 
-app = FastApi()
+# Create tables
+Base.metadata.create_all(bind=engine)
 
-models.Base.metadata.create_all(bind=engine)
+app = FastAPI()
+
+# Include routers
+app.include_router(auth.router, prefix="/auth", tags=["auth"])
 
 @app.get("/test")
-
+async def test():
+    return {"message": "API working!"}
