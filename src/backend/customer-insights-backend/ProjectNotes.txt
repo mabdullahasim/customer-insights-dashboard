@@ -174,7 +174,7 @@ utils/ = generic helpers that can be used anywh
 
 
 
-modles is to represent how data is stored in the database
+models is to represent how data is stored in the database
     - user for creating tables, querying the database, inserting/updating rows.
     - lives in models.
     - this is only for the database you dont care about what yoou send to the front end helper

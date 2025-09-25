@@ -49,3 +49,35 @@ def get_user(db: Session, username: str) -> UserInDB | None:
         return UserInDB.from_orm(db_user)
     
     return None
+
+def authenticate_user(db: Session, username: str, password: str):
+    # Check if username and password combination is valid
+    # Returns UserInDB object if successful
+
+    user = get_user(db, username)  # Calls get user to fetch user from database using SQLAlchemy, User will be a pydantic model or none
+
+    if not user:
+        return False
+
+    if not verify_password(password, user.hashed_password):
+        return False
+
+    return user # Return user in DB object
+
+def create_access_token(data: dict, expires_delta: timedelta or None = None):
+    # Create a JWT to  authenticate requests from the user
+
+    to_encode = data.copy() # Copy data which is a dictionary containing user info, Copy so we dont modify the original
+
+    if expires_delta:   # if experation time was passed use it otherwise default to 15 minutes
+        expire = datetime.utcnow() + expires_delta # Set token expiration time to now + expire_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=15) # Set now + 15 minutes as expiration time
+
+    to_encode.update({"exp": expire}) # Adds the expiration time to the payload of the JWT
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM) # Creates the actual JWT string using the data to_encode, secret key and algo.
+
+    return encoded_jwt # REturn the JWT string
+
+
+
