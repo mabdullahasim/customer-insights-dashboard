@@ -69,7 +69,7 @@ def create_access_token(data: dict, expires_delta: timedelta or None = None):
 
     to_encode = data.copy() # Copy data which is a dictionary containing user info, Copy so we dont modify the original
 
-    if expires_delta:   # if experation time was passed use it otherwise default to 15 minutes
+    if expires_delta:   # if expiration time was passed use it otherwise default to 15 minutes
         expire = datetime.utcnow() + expires_delta # Set token expiration time to now + expire_delta
     else:
         expire = datetime.utcnow() + timedelta(minutes=15) # Set now + 15 minutes as expiration time
@@ -79,25 +79,33 @@ def create_access_token(data: dict, expires_delta: timedelta or None = None):
 
     return encoded_jwt # REturn the JWT string
 
-async def get_current_user(token str = Depends(oauth_2_scheme)): #parsing out token data
-    credential_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate credentials" headers={"WWW-Authenticate": "Bearer"})
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username : str = payload.get("sub")
+async def get_current_user(token str = Depends(oauth_2_scheme)):
+    # FastAPI looks in the Authorization Bearer <token> header and extracts the token string
 
-        if username is None:
+    # Prepares a reusable exception to pass when credentials are invalid
+    credential_exception = HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM]) # Decodes JWT with the secret key and the alogrithm
+        username: str = payload.get("sub") # Reads the sub field in the JWT payload
+
+        if username is None:    # If username is missing raise exception
             raise credential_exception
 
-        token_data = TokenData(username =username)
+        token_data = TokenData(username =username) # Wraps the username in pydantic schema for type safety
 
-    except JWTError:
+    except JWTError: # If JWt is expired or invalid raises credentials error
         raise credential_exception
 
-    user = get_user(db, username=token_data.username)
+    user = get_user(db, username=token_data.username) # Fetches the actual user object
     if user is None:
         raise credential_exception
 
-    return user
+    return user # Return user
 
 async def get_current_active_user(current_userL UserInDB = Depends(get_current_user)):
     if current_user.disabled:
