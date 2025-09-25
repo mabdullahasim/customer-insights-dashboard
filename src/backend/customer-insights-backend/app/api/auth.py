@@ -1,12 +1,20 @@
 from fastapi import APIRouter, status, Depends, HTTPException
-import models
 from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
 from dotenv import load_dotenv
 import os
+from app.core.security import authenticate_user, create_access_token, get_current_active_user
+from app.schemas.user import User, Token, UserInDB
+from app.core.database import get_db
+from app.models import user
 
 load_dotenv()
-@app.post("/token", reponse_modeL=Token)
+router = APIRouter()
+@router.get("/ping")
+def ping():
+    return {"message": "Auth route is working!"}
+
+@router.post("/token", response_model=Token)
 async def login_for_acess_token(form_data: OAuth2PasswordRequestForm = Depends()): # Data accepted to generate a JWT is username and password, depending on data to parse
     user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
@@ -15,16 +23,16 @@ async def login_for_acess_token(form_data: OAuth2PasswordRequestForm = Depends()
             detail = "Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"}
         )
-    TOKEN_EXPIRES = os.getenv("TOKEN_EXPIRES")
+    TOKEN_EXPIRES = int(os.getenv("TOKEN_EXPIRES", 30))
     access_token_expires = timedelta(minutes=TOKEN_EXPIRES)
     access_token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
 
     return {"access_token": access_token, "token_type":"bearer"}
 
-@app.get("/users/me/", reponse_modeL=User)
+@router.get("/users/me/", response_model=User)
 async def read_users_me(current_user: User = Depends(get_current_active_user)):
     return current_user
 
-@app.get("/users/me/items")
+@router.get("/users/me/items")
 async def read_own_items(current_user: User = Depends(get_current_active_user)):
-    return [{"item_id" : 1, "owner" :current_user}]
+    return [{"item_id": 1, "owner": current_user.dict()}]

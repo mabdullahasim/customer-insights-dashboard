@@ -1,39 +1,40 @@
 from passlib.context import CryptContext
 from fastapi import status, Depends, HTTPException
 from sqlalchemy.orm import Session
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from pydantic import BaseModel
+from fastapi.security import OAuth2PasswordBearer
 from datetime import datetime, timedelta
-from jose import JwtError, jwt
+from jose import JWTError, jwt
 from dotenv import load_dotenv
 import os
-import models
-from models.user import User
+from app.schemas.user import UserInDB, User, Token
+from app.models.user import User
+from app.core.database import get_db
+from pydantic import BaseModel
+
 load_dotenv()
 
-SECRET_KEY= os.getenv("SECRET_KEY")
-ALGORITHM= os.getenv("ALGORITHM")
-TOKEN_EXPIRES = os.getenv("TOKEN_EXPIRES")
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+TOKEN_EXPIRES = int(os.getenv("TOKEN_EXPIRES", 30))
 
-class Token(BaseModel): # Response shape for JWT tokens
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth_2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
+
+
+class Token(BaseModel):
     access_token: str
     token_type: str
 
-class TokenData(BaseModel): # Stores decoded token info after verifying JWT
-    username: str or None = None
+class TokenData(BaseModel):
+    username: str | None = None
 
-#----------------------------
-#    Password hashing
-#----------------------------
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto") # Handling password hashing using bcrypt
-oauth_2_scheme = OAuth2PasswordBearer(tokenUrl="token") # Tells FastAPI where to get the token from
-
-def verify_password(plain_password, hashed_password):       # Compares the plain text password from user input with hashed password stored in DB
+def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
-def get_password_hash(password):                            # Takes plain text pwd and returns hashed password.
+
+def get_password_hash(password):
     return pwd_context.hash(password)
+
 
 def get_user(db: Session, username: str) -> UserInDB | None:
     # DB:session SQLALchemy database session passed in from route
@@ -49,6 +50,7 @@ def get_user(db: Session, username: str) -> UserInDB | None:
     
     return None
 
+
 def authenticate_user(db: Session, username: str, password: str):
     # Check if username and password combination is valid
     # Returns UserInDB object if successful
@@ -63,51 +65,42 @@ def authenticate_user(db: Session, username: str, password: str):
 
     return user # Return user in DB object
 
-def create_access_token(data: dict, expires_delta: timedelta or None = None):
-    # Create a JWT to  authenticate requests from the user
 
-    to_encode = data.copy() # Copy data which is a dictionary containing user info, Copy so we dont modify the original
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
 
     if expires_delta:   # if expiration time was passed use it otherwise default to 15 minutes
         expire = datetime.utcnow() + expires_delta # Set token expiration time to now + expire_delta
     else:
         expire = datetime.utcnow() + timedelta(minutes=15) # Set now + 15 minutes as expiration time
 
-    to_encode.update({"exp": expire}) # Adds the expiration time to the payload of the JWT
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM) # Creates the actual JWT string using the data to_encode, secret key and algo.
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-    return encoded_jwt # REturn the JWT string
+    return encoded_jwt
 
-async def get_current_user(token str = Depends(oauth_2_scheme)):
-    # FastAPI looks in the Authorization Bearer <token> header and extracts the token string
 
-    # Prepares a reusable exception to pass when credentials are invalid
-    credential_exception = HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials",
-            headers={"WWW-Authenticate": "Bearer"}
-        )
-
+async def get_current_user(token: str = Depends(oauth_2_scheme), db: Session = Depends(get_db)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM]) # Decodes JWT with the secret key and the alogrithm
-        username: str = payload.get("sub") # Reads the sub field in the JWT payload
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
 
-        if username is None:    # If username is missing raise exception
-            raise credential_exception
-
-        token_data = TokenData(username =username) # Wraps the username in pydantic schema for type safety
-
-    except JWTError: # If JWt is expired or invalid raises credentials error
-        raise credential_exception
-
-    user = get_user(db, username=token_data.username) # Fetches the actual user object
+    user = get_user(db, username=token_data.username)
     if user is None:
-        raise credential_exception
+        raise credentials_exception
+    return user
 
-    return user # Return user
 
-async def get_current_active_user(current_userL UserInDB = Depends(get_current_user)):
-    if current_user.disabled:
+async def get_current_active_user(current_user: UserInDB = Depends(get_current_user)):
+    if not current_user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
-
     return current_user
