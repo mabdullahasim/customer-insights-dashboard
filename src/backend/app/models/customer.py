@@ -14,3 +14,4 @@ class customer(Base):
     purchase_frequency = Column(Float, nullable=False)
     last_purchase_date = Column(DateTime, default=datetime.utcnow)
     total_spent = Column(Float, nullable=False)
+    

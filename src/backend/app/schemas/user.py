@@ -10,11 +10,15 @@ class UserInDB(BaseModel):
 class User(BaseModel):
     username: str
     email: str
-    full_name: str
     role: str
     is_active: bool
 
     model_config = {"from_attributes": True}
+
+class UserCreate(BaseModel):
+    username: str
+    email: str
+    password: str
 
 # Token model for JWT responses
 class Token(BaseModel):
