@@ -17,8 +17,8 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 TOKEN_EXPIRES = int(os.getenv("TOKEN_EXPIRES", 30))
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth_2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto") # Handling password hashing using bcrypt
+oauth_2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token") # Tells FastAPI where to get the token from
 
 
 class Token(BaseModel):
@@ -28,11 +28,10 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     username: str | None = None
 
-def verify_password(plain_password, hashed_password):
+def verify_password(plain_password, hashed_password):       # Compares the plain text password from user input with hashed password stored in DB
     return pwd_context.verify(plain_password, hashed_password)
 
-
-def get_password_hash(password):
+def get_password_hash(password):                            # Takes plain text pwd and returns hashed password.
     return pwd_context.hash(password)
 
 
