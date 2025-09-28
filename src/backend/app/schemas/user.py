@@ -20,6 +20,11 @@ class UserCreate(BaseModel):
     email: str
     password: str
 
+class UserRead(BaseModel):
+    username: str
+    email: str
+    is_avtive: bool
+    
 # Token model for JWT responses
 class Token(BaseModel):
     access_token: str
