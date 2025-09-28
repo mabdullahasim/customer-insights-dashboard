@@ -3,10 +3,14 @@ from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
 from dotenv import load_dotenv
 import os
-from app.core.security import authenticate_user, create_access_token, get_current_active_user
-from app.schemas.user import User, Token, UserInDB
+from app.core.security import authenticate_user, create_access_token, get_current_active_user, get_current_user, get_user, get_password_hash
+from app.schemas.user import User, Token, UserInDB, UserCreate, UserRead
 from app.core.database import get_db
 from app.models import user
+from sqlalchemy.orm import Session
+from app.crud.user import create_user
+from jose import JWTError, jwt
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 load_dotenv()
 router = APIRouter()
@@ -33,16 +37,14 @@ async def login_for_access_token(db: Session = Depends(get_db), form_data: OAuth
 async def signUp(user_in: UserCreate , db: Session = Depends(get_db)):
     existing = get_user(db, user_in.username)
     if existing:
-        raise HTTPException(status_code=400, detail"User already exists")
+        raise HTTPException(status_code=400, detail="User already exists")
     
     hashed_password = get_password_hash(user_in.password)
 
-    new_user = user_create(db, user_in hashed_password)
+    new_user = await create_user(db, user_in, hashed_password)
 
     return new_user
 
 
-@router.get("/me", response_model=UserRead)
-async def read_users_me(current_user: UserRead = Depends(get_current_user)):
-    return current_user
+
 

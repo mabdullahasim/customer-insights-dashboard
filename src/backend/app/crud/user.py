@@ -1,8 +1,13 @@
-async def create_user(db: Session, user_in: UserCreate, hashed_password: str) -> User
+from sqlalchemy.orm import Session
+from app.schemas.user import UserCreate
+from app.models.user import User
+async def create_user(db: Session, user_in: UserCreate, hashed_password: str) -> User:
     new_user = User(
         username=user_in.username,
         email=user_in.email,
-        hashed_password=hashed_password
+        role="user",
+        hashed_password=hashed_password,
+        is_active=True,
     )
     db.add(new_user)
     db.commit()
@@ -10,14 +15,4 @@ async def create_user(db: Session, user_in: UserCreate, hashed_password: str) ->
 
     return new_user
 
-
-
-
-
-
-def update_user():
-
-
-
-def delete_user():
 
