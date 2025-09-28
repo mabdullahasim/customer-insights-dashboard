@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 class UserInDB(BaseModel):
     username: str
@@ -19,6 +19,12 @@ class UserCreate(BaseModel):
     username: str
     email: str
     password: str
+
+    @field_validator("username")
+    def check_username(cls, v: str) -> str:
+        if not re.match(r'^[a-zA-Z0-9_]{8,12}$', v):
+            raise ValueError("Username must be 8–12 characters, letters/numbers/underscores only")
+        return v
 
 class UserRead(BaseModel):
     username: str

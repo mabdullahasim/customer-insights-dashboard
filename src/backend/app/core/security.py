@@ -10,6 +10,7 @@ from app.schemas.user import UserInDB, User, Token
 from app.models.user import User
 from app.core.database import get_db
 from pydantic import BaseModel
+from password_validator import PasswordValidator
 
 load_dotenv()
 
@@ -32,6 +33,7 @@ def verify_password(plain_password, hashed_password):       # Compares the plain
     return pwd_context.verify(plain_password, hashed_password)
 
 def get_password_hash(password):                            # Takes plain text pwd and returns hashed password.
+    password_check = await password_validation(password)
     return pwd_context.hash(password)
 
 
@@ -103,3 +105,29 @@ async def get_current_active_user(current_user: UserInDB = Depends(get_current_u
     if not current_user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
+
+async def password_validation(password: str):
+    schema = PasswordValidator()
+    schema.min(8).max(20).has().uppercase().has().lowercase().has().digits().has().symbols()
+
+    result = schema.validate(password, details=True)
+
+    if result is True:
+        return password
+    else:
+        for rule in results:
+            if rule == 'min':
+                raise HTTPException(status_code=400, detail="Password must be at least 8 characters long")
+            elif rule == 'max':
+                raise HTTPException(status_code=400, detail="Password must not exceed 20 characters")
+            elif rule == 'uppercase':
+                raise HTTPException(status_code=400, detail="Password must include at least one uppercase")
+            elif rule == 'lowercase':
+                raise HTTPException(status_code=400, detail="Password must include at least one lowercase")
+            elif rule == 'digits':
+                raise HTTPException(status_code=400, detail="Password must include at least one digit")
+            elif rule == 'symbols':
+                raise HTTPException(status_code=400, detail="Password must inlcude at least 1 symbol")
+
+    
+async def username_validation():
