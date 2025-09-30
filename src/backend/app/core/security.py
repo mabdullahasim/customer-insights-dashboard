@@ -114,20 +114,19 @@ async def password_validation(password: str):
 
     if result is True:
         return password
-    else:
-        for rule in results:
-            if rule == 'min':
-                raise HTTPException(status_code=400, detail="Password must be at least 8 characters long")
-            elif rule == 'max':
-                raise HTTPException(status_code=400, detail="Password must not exceed 20 characters")
-            elif rule == 'uppercase':
-                raise HTTPException(status_code=400, detail="Password must include at least one uppercase")
-            elif rule == 'lowercase':
-                raise HTTPException(status_code=400, detail="Password must include at least one lowercase")
-            elif rule == 'digits':
-                raise HTTPException(status_code=400, detail="Password must include at least one digit")
-            elif rule == 'symbols':
-                raise HTTPException(status_code=400, detail="Password must inlcude at least 1 symbol")
+   
+    rule = result[0]
+    if rule == 'min':
+        raise HTTPException(status_code=400, detail="Password must be at least 8 characters long")
+    elif rule == 'max':
+        raise HTTPException(status_code=400, detail="Password must not exceed 20 characters")
+    elif rule == 'uppercase':
+        raise HTTPException(status_code=400, detail="Password must include at least one uppercase")
+    elif rule == 'lowercase':
+        raise HTTPException(status_code=400, detail="Password must include at least one lowercase")
+    elif rule == 'digits':
+        raise HTTPException(status_code=400, detail="Password must include at least one digit")
+    elif rule == 'symbols':
+        raise HTTPException(status_code=400, detail="Password must inlcude at least 1 symbol")
 
-    
-async def username_validation():
+
