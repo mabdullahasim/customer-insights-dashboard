@@ -30,6 +30,11 @@ class UserRead(BaseModel):
     username: str
     email: str
     is_avtive: bool
+
+class UserUpdate(BaseModel):
+    username: str
+    email: str
+    hashed_password: str
     
 # Token model for JWT responses
 class Token(BaseModel):
