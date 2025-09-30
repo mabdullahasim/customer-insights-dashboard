@@ -9,6 +9,11 @@ class customer_create(BaseModel):
     last_purchase_date: Optional[datetime]
     review_score: Optional[int]
 
+class CustomerInDB(BaseModel):
+    email: str
+    id: int
+
+    model_config = {"from_attributes": True}
 
 class customer_read(BaseModel):
     id: int → DB primary key

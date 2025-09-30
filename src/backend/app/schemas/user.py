@@ -5,7 +5,7 @@ class UserInDB(BaseModel):
     email: str
     hashed_password: str
 
-    model_config = {"from_attributes": True}  # Pydantic v2 replacement for orm_mode
+    model_config = {"from_attributes": True}
 
 class User(BaseModel):
     username: str
