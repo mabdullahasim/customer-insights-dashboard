@@ -194,3 +194,15 @@ schemas is to define how data should lok coming in from requests or going out in
 | Sensitive info | All DB fields, incl password  | Only what’s safe to expose      |
 | Where used     | Database queries, ORM objects | API request/response validation |
 
+model is like storage blueprint inside db you use it when querying the database
+scheme is used when calling the API 
+    -data contract between the api and clients 
+    -when validating input
+    -when structuring Responsses
+    -when making sure feilds are valid 
+    -language contract
+
+client -> scheme request json gets validated agaisnt a scheme
+scheme -> model: you take the data and use it to create/update a db record
+model -> Schema when you fetch rows from a db you wrap them in a response schemas
+schema -> client fast api serializes the schema to json and sends it to the client
