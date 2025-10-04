@@ -15,7 +15,7 @@ class CustomerInDB(BaseModel):
 
     model_config = {"from_attributes": True}
 
-class customer_read(BaseModel):
+class CustomerRead(BaseModel):
     id: int → DB primary key
     user_id: int → owner (the logged-in user)
     full_name: str
@@ -26,8 +26,9 @@ class customer_read(BaseModel):
     review_score: Optional[int]
     created_at: datetime
     updated_at: datetime
+    model_config = {"from_attributes": True}.
 
-class customer_update(BaseModel):
+class CustomerUpdate(BaseModel):
     total_spent: Decimal
     last_purchase_date: Optional[datetime]
     review_score: Optional[int]
