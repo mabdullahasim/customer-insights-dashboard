@@ -1,4 +1,6 @@
+# -----------------
 # Logs
+# -----------------
 logs
 *.log
 npm-debug.log*
@@ -7,15 +9,22 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# -----------------
+# Node / Frontend
+# -----------------
+node_modules/
+dist/
+dist-ssr/
 *.local
+*.cache
+*.tsbuildinfo
 
+# -----------------
 # Editor directories and files
+# -----------------
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
@@ -23,12 +32,28 @@ dist-ssr
 *.sln
 *.sw?
 
-# backend
+# -----------------
+# Python / Backend
+# -----------------
 venv/
 .env
+.env.*
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
+*.db
+*.sqlite3
 
-# frontend
+# -----------------
+# Frontend specific (if you have nested frontend folder)
+# -----------------
 frontend/node_modules/
+frontend/dist/
+
+# -----------------
+# Miscellaneous / personal files
+# -----------------
 nextsteps.txt
+*.bak
+*.tmp
