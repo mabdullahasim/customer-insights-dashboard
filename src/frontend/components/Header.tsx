@@ -17,7 +17,7 @@ const Header = ({onSearch}: HeaderProps) => { //recieves props of type HeaderPro
     };
     return(
         <header className ={styles.header}>
-            <p>Hi, Abdullah</p>
+            {/* <p>Hi, Abdullah</p> */}
            <div className={`${styles.iconGroup} ${expanded ? styles.expanded : ""}`}>
                 <Search
                     className={styles.searchIcon}
