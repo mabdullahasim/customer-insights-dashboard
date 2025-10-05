@@ -22,19 +22,19 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto") # Handling pas
 oauth_2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token") # Tells FastAPI where to get the token from
 
 
-class Token(BaseModel):
+class Token(BaseModel): #token model
     access_token: str
     token_type: str
 
-class TokenData(BaseModel):
+class TokenData(BaseModel): #tokenData model
     username: str | None = None
 
 def verify_password(plain_password, hashed_password):       # Compares the plain text password from user input with hashed password stored in DB
     return pwd_context.verify(plain_password, hashed_password)
 
 def get_password_hash(password):                            # Takes plain text pwd and returns hashed password.
-    password_check = await password_validation(password)
-    return pwd_context.hash(password)
+    password_check = await password_validation(password) #calls password_validation to check if password is valid
+    return pwd_context.hash(password) #return password hash
 
 
 def get_user(db: Session, username: str) -> UserInDB | None:
@@ -58,10 +58,10 @@ def authenticate_user(db: Session, username: str, password: str):
 
     user = get_user(db, username)  # Calls get user to fetch user from database using SQLAlchemy, User will be a pydantic model or none
 
-    if not user:
+    if not user: #if username does not match return false.
         return False
 
-    if not verify_password(password, user.hashed_password):
+    if not verify_password(password, user.hashed_password): #if password does not match return false.
         return False
 
     return user # Return user in DB object
@@ -107,15 +107,17 @@ async def get_current_active_user(current_user: UserInDB = Depends(get_current_u
     return current_user
 
 async def password_validation(password: str):
-    schema = PasswordValidator()
-    schema.min(8).max(20).has().uppercase().has().lowercase().has().digits().has().symbols()
+    schema = PasswordValidator() #set schema to passwordValidator function
+    schema.min(8).max(20).has().uppercase().has().lowercase().has().digits().has().symbols() 
+    #password schema is minimum 8 char, has an uppercase letter, has an lower case letter and has digits and symbols
 
-    result = schema.validate(password, details=True)
+    result = schema.validate(password, details=True) #if password meets requirements then set result = true
 
-    if result is True:
+    if result is True: #if result true return password to be hashed
         return password
    
-    rule = result[0]
+    rule = result[0] #get the first rule that does not meet the requirements
+    #switch case to display rule
     if rule == 'min':
         raise HTTPException(status_code=400, detail="Password must be at least 8 characters long")
     elif rule == 'max':
