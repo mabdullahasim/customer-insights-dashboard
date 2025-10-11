@@ -89,5 +89,8 @@ header .imageText .headerText{
     border-radius: 20%;
     color: var(--sidebar-color);
     font-size: 22px;
-    
+
+}
+.reports{
+    color: #373636;
 }
