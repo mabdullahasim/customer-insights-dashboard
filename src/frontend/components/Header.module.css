@@ -38,7 +38,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  background-color: #29292A;
+  background-color: var(--icon-color);
   cursor: pointer;
   flex: 0 0 auto;
   transition: transform 0.25s ease;
@@ -60,7 +60,7 @@
   border: none;
   outline: none;
   color: #E6E6E6;
-  background: #29292A;
+  background: var(--icon-color);
   border-radius: 999px;
 
   width: 0;            /* collapsed */
@@ -99,7 +99,7 @@
 
 .notifications {
   width: 30px;
-  background-color: #29292A;
+  background-color: var(--icon-color);
   border: 1px solid rgba(127, 127, 133, 0.5);
   border-radius: 8px;
 }
