@@ -1,17 +1,33 @@
 import { useState } from "react";
 import { Link } from "react-router-dom"; // for navigation
 import password_icon from "../assets/password.png";
-import email_icon from "../assets/email.png";
+import user_icon from "../assets/person.png";
 import styles from "./Login.module.css";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Login submitted:", { email, password });
-    // You can call your login API here
+    const params = new URLSearchParams();
+    params.append("username", email);    // FastAPI expects `username`
+    params.append("password", password);
+    try{
+      const res = await axios.post("http://localhost:8000/auth/token", params, {headers: { "Content-Type": "application/x-www-form-urlencoded" },});
+
+      console.log("Login success:", res.data);
+      localStorage.setItem("token", res.data.access_token); // save JWT
+      navigate("/dashboard"); 
+    }
+     catch (err: any) {
+      console.error("Login failed:", err.response?.data || err.message);
+      alert("Invalid username or password");
+    }
+    
   };
 
   return (
@@ -23,10 +39,10 @@ const Login = () => {
 
       <form className={styles.inputs} onSubmit={handleSubmit}>
         <div className={styles.input}>
-          <img src={email_icon} alt="email icon" />
+          <img src={user_icon} alt="email icon" />
           <input
-            type="email"
-            placeholder="Email"
+            type="text"
+            placeholder="Username"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required

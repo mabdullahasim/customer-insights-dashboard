@@ -3,19 +3,34 @@ import user_icon from "../assets/person.png";
 import email_icon from "../assets/email.png";
 import password_icon from "../assets/password.png";
 import styles from "./SignUp.module.css";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function SignUp() {
   // State for inputs
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-
+  const navigate = useNavigate();
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // For now, just log values
-    console.log("Sign Up submitted", { username, email, password });
-    // You can later call your API here
+    try {
+      const res = await axios.post("http://localhost:8000/auth/signUp", {
+        username,
+        email,
+        password,
+      });
+
+      alert("Account created successfully! You can now log in.");
+
+      alert("Account created successfully!");
+      navigate("/login");
+    }
+    catch (err: any) {
+      console.error("Signup failed:", err.response?.data || err.message);
+      alert(err.response?.data?.detail || "Signup failed. Please try again.");
+    }
   };
 
   return (
@@ -30,7 +45,7 @@ function SignUp() {
           <img src={user_icon} alt="user" />
           <input
             type="text"
-            placeholder="Name"
+            placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
