@@ -18,7 +18,7 @@ router = APIRouter()
 def ping():
     return {"message": "Auth route is working!"}
 
-#route for user login in and token is generated 
+#route for user login in and token is generated
 @router.post("/token", response_model=Token)
 async def login_for_access_token(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()): # Data accepted to generate a JWT is username and password, depending on data to parse
     user = authenticate_user(db, form_data.username, form_data.password)
@@ -43,7 +43,7 @@ async def signUp(user_in: UserCreate , db: Session = Depends(get_db)): #user_in 
         raise HTTPException(status_code=400, detail="User already exists")
     
     #get the password hash for the user if new user
-    hashed_password = get_password_hash(user_in.password)
+    hashed_password = await get_password_hash(user_in.password)
     #send the hash and UserCreate data to create_user crud function
     new_user = await create_user(db, user_in, hashed_password)
 

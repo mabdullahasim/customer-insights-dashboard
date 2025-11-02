@@ -1,4 +1,5 @@
 from pydantic import BaseModel, field_validator
+import re
 
 class UserInDB(BaseModel):
     username: str

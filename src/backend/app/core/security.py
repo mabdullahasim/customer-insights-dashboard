@@ -11,6 +11,7 @@ from app.models.user import User
 from app.core.database import get_db
 from pydantic import BaseModel
 from password_validator import PasswordValidator
+import re
 
 load_dotenv()
 
@@ -32,7 +33,7 @@ class TokenData(BaseModel): #tokenData model
 def verify_password(plain_password, hashed_password):       # Compares the plain text password from user input with hashed password stored in DB
     return pwd_context.verify(plain_password, hashed_password)
 
-def get_password_hash(password):                            # Takes plain text pwd and returns hashed password.
+async def get_password_hash(password: str) -> str:                 # Takes plain text pwd and returns hashed password.
     password_check = await password_validation(password) #calls password_validation to check if password is valid
     return pwd_context.hash(password) #return password hash
 
@@ -107,28 +108,20 @@ async def get_current_active_user(current_user: UserInDB = Depends(get_current_u
     return current_user
 
 async def password_validation(password: str):
-    schema = PasswordValidator() #set schema to passwordValidator function
-    schema.min(8).max(20).has().uppercase().has().lowercase().has().digits().has().symbols() 
-    #password schema is minimum 8 char, has an uppercase letter, has an lower case letter and has digits and symbols
-
-    result = schema.validate(password, details=True) #if password meets requirements then set result = true
-
-    if result is True: #if result true return password to be hashed
-        return password
-   
-    rule = result[0] #get the first rule that does not meet the requirements
-    #switch case to display rule
-    if rule == 'min':
-        raise HTTPException(status_code=400, detail="Password must be at least 8 characters long")
-    elif rule == 'max':
-        raise HTTPException(status_code=400, detail="Password must not exceed 20 characters")
-    elif rule == 'uppercase':
-        raise HTTPException(status_code=400, detail="Password must include at least one uppercase")
-    elif rule == 'lowercase':
-        raise HTTPException(status_code=400, detail="Password must include at least one lowercase")
-    elif rule == 'digits':
-        raise HTTPException(status_code=400, detail="Password must include at least one digit")
-    elif rule == 'symbols':
-        raise HTTPException(status_code=400, detail="Password must inlcude at least 1 symbol")
+    PASSWORD_SCHEMA = (
+        PasswordValidator()
+        .min(8).max(16)
+        .has().uppercase()
+        .has().lowercase()
+        .has().digits()
+        .has().symbols()
+        .no().spaces()
+    )
+    if not PASSWORD_SCHEMA.validate(password):     # returns bool
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Password must be 8–16 chars, include upper, lower, digit, symbol, and have no spaces."
+        )
+    return password
 
 
