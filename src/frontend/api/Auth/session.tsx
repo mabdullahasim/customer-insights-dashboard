@@ -15,7 +15,7 @@ export function checkTokenExpiry(){
 
         return Date.now() >= exp *1000;
     }
-};
+}
 
 export const isLoggedIn =() =>{
     const token = getToken();
@@ -27,5 +27,5 @@ export const isLoggedIn =() =>{
         return false;
     }
     return true;
-};
+}
 
