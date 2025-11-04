@@ -52,6 +52,13 @@ def get_user(db: Session, username: str) -> UserInDB | None:
     
     return None
 
+def get_user_by_email(db: Session, email: str) -> UserInDB | None:
+    db_user = db.query(User).filter(User.email == email).first()
+
+     if not db_user:
+        return None
+
+    return UserInDB.from_orm(db_user)
 
 def authenticate_user(db: Session, username: str, password: str):
     # Check if username and password combination is valid
