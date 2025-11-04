@@ -3,9 +3,15 @@ import React from "react";
 import "boxicons/css/boxicons.min.css";
 import { NavLink } from "react-router-dom";
 import { useTheme } from "../components/useTheme";
-
+import { useNavigate} from "react-router-dom";
 const Nav = () => {
     const { theme, toggleTheme } = useTheme();
+    const navigate = useNavigate();
+    function handleLogout(e: React.MouseEvent) {
+        e.preventDefault();
+        localStorage.removeItem("token");
+        navigate("/login", { replace: true });
+    }
     return(
         <>
             <nav className= {styles.sidebar}>
@@ -47,7 +53,7 @@ const Nav = () => {
                     </div>
                 </div>
                 <div className={styles.bottomContent}>
-                    <NavLink className={styles.navLink} to="">
+                    <NavLink className={styles.navLink} to="" onClick={handleLogout}>
                                 <i className ={`bx bx-log-out ${styles.icons}`}> </i>
                                 <span className={styles.text}>Logout</span>
                     </NavLink>

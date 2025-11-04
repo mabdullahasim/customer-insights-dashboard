@@ -22,9 +22,6 @@ function SignUp() {
         password,
       });
 
-      alert("Account created successfully! You can now log in.");
-
-      alert("Account created successfully!");
       navigate("/login");
     }
     catch (err: any) {

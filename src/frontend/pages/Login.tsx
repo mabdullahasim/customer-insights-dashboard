@@ -8,20 +8,20 @@ import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const params = new URLSearchParams();
-    params.append("username", email);    // FastAPI expects `username`
+    params.append("username", username);    // FastAPI expects `username`
     params.append("password", password);
     try{
       const res = await axios.post("http://localhost:8000/auth/token", params, {headers: { "Content-Type": "application/x-www-form-urlencoded" },});
 
       console.log("Login success:", res.data);
       localStorage.setItem("token", res.data.access_token); // save JWT
-      navigate("/dashboard"); 
+      navigate("/dashboard");
     }
      catch (err: any) {
       console.error("Login failed:", err.response?.data || err.message);
@@ -39,12 +39,12 @@ const Login = () => {
 
       <form className={styles.inputs} onSubmit={handleSubmit}>
         <div className={styles.input}>
-          <img src={user_icon} alt="email icon" />
+          <img src={user_icon} alt="username icon" />
           <input
             type="text"
             placeholder="Username"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             required
           />
         </div>
