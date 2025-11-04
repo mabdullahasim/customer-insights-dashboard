@@ -205,4 +205,40 @@ scheme is used when calling the API
 client -> scheme request json gets validated agaisnt a scheme
 scheme -> model: you take the data and use it to create/update a db record
 model -> Schema when you fetch rows from a db you wrap them in a response schemas
-schema -> client fast api serializes the schema to json and sends it to the client
+schema -> client fast api serializes the schema to json and sends it to the clientGreat. Lock the auth down and finish the basics in this order.
+
+Set proper API results. Return 201 on signup and 200 on login. Return a consistent JSON shape for success and errors.
+
+Add email verification. Generate a signed token. Send a link. Block login until verified or allow but warn, based on your rules.
+
+Add rate limits and lockouts. Track failed logins. Lock after 5 bad tries for 15 minutes. Log the events.
+
+Build password reset. Issue a one-time token with short expiry. Let users set a new password.
+
+Issue short-lived access tokens and longer refresh tokens. Store tokens in httpOnly Secure SameSite cookies. Expose a refresh route. Add a logout route that clears cookies.
+
+Protect routes. Add a FastAPI dependency that verifies JWT and pulls the user. Add role checks for admin endpoints. //we are here ======
+
+Tighten CORS. Allow only your frontend origin. Allow credentials. Block wildcards.
+
+Harden headers. Add SecurityMiddleware. Set HSTS in prod. Turn off docs in prod or protect with auth.
+
+Finish the frontend. Set axios baseURL and withCredentials. Add an interceptor to attach Authorization only if you use header tokens. Show clear error messages for 400, 401, 409, and 422.
+
+Polish the forms. Use type="text" and autocomplete="username" for usernames. Use type="password" and autocomplete="current-password". Validate before submit.
+
+Migrate the DB. Create a User table with id, email, username, password_hash, is_active, is_verified, failed_attempts, last_login, role, created_at, updated_at. Use Alembic.
+
+Test the flows. Write pytest tests for signup, login, refresh, logout, verify email, reset password, and protected routes. Add a Postman or Thunder Client collection.
+
+Add observability. Log auth failures and 5xx. Add health checks. Track rate of 401s and lockouts.
+
+Plan deploy. Use HTTPS only. Set strong SECRET_KEYs in env vars. Rotate keys on a schedule. Backup the DB.
+
+Tell me which parts you want code for. I will drop the exact FastAPI routes, dependencies, and axios setup
+
+
+ADMIN LOGIN TO TEST
+username admin1224
+email admin1224@hotmail.com
+password Admin@1224

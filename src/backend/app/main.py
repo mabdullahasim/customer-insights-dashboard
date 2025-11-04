@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from app.api import auth
+from app.api import secure
 from app.core.database import engine, Base
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -19,6 +20,7 @@ Base.metadata.create_all(bind=engine)
 
 # Include routers
 app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+app.include_router(secure.router)
 
 # Test endpoint
 @app.get("/test")
