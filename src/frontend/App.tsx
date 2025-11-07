@@ -7,9 +7,9 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route element = {<RequireAuth/>}> {/* for protected routes requiring auth */}
+        {/* <Route element = {<RequireAuth/>}> for protected routes requiring auth */}
           <Route path= "/dashboard" element = {<Dashboard/>} />
-        </Route>
+        {/* </Route> */}
 
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
