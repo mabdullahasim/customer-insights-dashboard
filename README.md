@@ -1,123 +1,161 @@
-Customer Insights Dashboard
+# 📊 Customer Insights Dashboard
 
-A full-stack analytics platform for businesses to visualize and interpret customer data. It supports secure authentication, CSV upload, automated data analysis, and interactive charts for business insights.
+A full-stack analytics platform that helps small and medium businesses upload customer data, run automated analysis, and explore interactive dashboards for revenue, satisfaction, and retention.
 
-🧭 Overview
+---
 
-The Customer Insights Dashboard helps you track revenue, satisfaction, and customer trends in one place. It integrates a React + TypeScript frontend with a FastAPI backend and a PostgreSQL database.
+## ✨ Highlights
 
-This project is ideal for small and medium businesses seeking fast, reliable, and secure data visualization without complex BI tools.
+- **End-to-end analytics** – Upload customer CSVs and instantly see revenue, satisfaction, and retention insights.
+- **Secure accounts** – JWT-based sign up, login, and protected API routes.
+- **Interactive charts** – Real-time dashboards for revenue, satisfaction, and customer segments.
+- **Modern stack** – React + TypeScript frontend, FastAPI backend, PostgreSQL database.
 
-🚀 Features
+---
 
-User Authentication (JWT) – Secure sign-up, login, and token refresh
+## 🧱 Tech Stack
 
-CSV Upload & Parsing – Automatically validate and import customer data
+| Layer      | Technologies                              |
+|------------|-------------------------------------------|
+| Frontend   | React, TypeScript, Tailwind CSS, Chart.js |
+| Backend    | FastAPI, SQLAlchemy ORM, Pydantic, PyJWT  |
+| Database   | PostgreSQL                                |
+| Tooling    | Docker (optional), Git, VS Code, AWS      |
 
-Dynamic Analytics – View monthly revenue, satisfaction scores, and demographics
+---
 
-FastAPI Backend – Clean RESTful architecture with data validation (Pydantic)
+## 🚀 Getting Started
 
-SQLAlchemy ORM – Structured relational data modeling
+### Prerequisites
 
-Interactive Dashboards – Built with Chart.js for real-time visualization
+- Python 3.10+
+- Node.js 18+
+- PostgreSQL running locally
+- A `.env` file with your `DATABASE_URL` and `SECRET_KEY`
 
-Responsive UI – Styled with Tailwind CSS for smooth layout on all devices
+### 1. Backend
 
-🧰 Tech Stack
-
-Frontend
-React • TypeScript • Tailwind CSS • Chart.js
-
-Backend
-FastAPI • Python • SQLAlchemy • Pydantic • PyJWT
-
-Database
-PostgreSQL
-
-Dev Tools
-Docker • Git • VS Code • AWS
-
-Backend
-
-Navigate to the backend folder:
+```bash
 cd backend
-
-Install dependencies:
 pip install -r requirements.txt
-
-Create a .env file:
-
-DATABASE_URL=postgresql://user:password@localhost:5432/dashboarddb
-SECRET_KEY=your_secret_key
-ALGORITHM=HS256
-
-
-Run the backend:
 uvicorn main:app --reload
+```
 
-Frontend
+- API: [http://localhost:8000](http://localhost:8000)
+- Swagger Docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-Navigate to the frontend folder:
+### 2. Frontend
+
+```bash
 cd frontend
-
-Install dependencies:
 npm install
-
-Run the app:
 npm start
+```
 
-Access the dashboard at http://localhost:3000.
+- App: [http://localhost:3000](http://localhost:3000)
 
-📊 API Endpoints
+---
 
-Authentication
+## 🔑 Core Features
 
-POST /auth/signup – Register a user
+### Authentication
 
-POST /auth/login – Get access token
+Secure user management with JWT tokens.
 
-GET /auth/profile – Retrieve current user info
+| Endpoint          | Method | Description               |
+|-------------------|--------|---------------------------|
+| `/auth/signup`    | POST   | Register a new user       |
+| `/auth/login`     | POST   | Obtain a JWT access token |
+| `/auth/profile`   | GET    | Get current user profile  |
 
-Data Management
+The frontend stores the JWT and attaches it to every protected request via the `Authorization: Bearer <token>` header.
 
-POST /data/upload – Upload CSV file
+---
 
-GET /data/summary – Fetch key metrics
+### CSV Upload & Data Import
 
-GET /data/revenue – Monthly revenue data
+1. Log in via the UI or through `/docs` using your JWT token.
+2. Navigate to the **Upload** section in the dashboard.
+3. Upload a CSV matching the expected schema:
+full_name, email, country, total_spent, review_score, review_text, last_purchase_date
 
-GET /data/satisfaction – Satisfaction score data
 
-🧩 Example Flow
+The backend will:
+- Validate headers and file size
+- Parse and sanitize the CSV
+- Store rows in the `customers` table, linked to your user account
 
-User signs up and logs in.
+| Endpoint                  | Method | Description                    |
+|---------------------------|--------|--------------------------------|
+| `/utils/upload/customers` | POST   | Upload and import customer CSV |
 
-Uploads a CSV of customer data.
+---
 
-Backend parses and stores the data.
+### Analytics & Dashboards
 
-Dashboard displays key performance metrics:
+After uploading, the dashboard provides interactive insights across three categories:
 
-Revenue growth by month
+#### 💰 Revenue
+- Total revenue and average order value
+- Revenue breakdown by country and customer segment
 
-Average satisfaction scores
+#### 😊 Satisfaction & Sentiment
+- Average review score
+- Sentiment scores from review text (VADER) blended with star ratings
 
-Customer retention rates
+#### 🔄 Retention
+- Basic churn signals derived from last purchase date and spending patterns
 
-🧠 Future Improvements
+| Endpoint                        | Method | Description                        |
+|---------------------------------|--------|------------------------------------|
+| `/analytics/overview`           | GET    | Key metrics for the logged-in user |
+| `/analytics/revenue-by-country` | GET    | Grouped revenue data               |
+| `/analytics/satisfaction`       | GET    | Satisfaction and sentiment metrics |
 
-Filtering by date, product, or location
+---
 
-AI-based feedback summaries
+## 📂 Project Structure
+root/
+├── backend/
+│ ├── app/
+│ │ ├── api/ # FastAPI routers (auth, utils, analytics)
+│ │ ├── core/ # Config, database, JWT/OAuth2 security
+│ │ ├── crud/ # DB operations (users, customers, imports)
+│ │ ├── models/ # SQLAlchemy models (User, Customer, etc.)
+│ │ └── schemas/ # Pydantic schemas (User, Customer, Analytics)
+│ ├── main.py # FastAPI entrypoint
+│ └── requirements.txt
+│
+├── frontend/
+│ └── src/
+│ ├── components/ # Reusable UI components
+│ ├── pages/ # Dashboard views
+│ ├── charts/ # Chart.js integrations
+│ └── services/ # API clients to backend
+│
+└── README.md
 
-Admin and team dashboards
+---
 
-Cloud deployment with CI/CD pipelines
+## 🧠 Roadmap
 
-👤 Author
+- [ ] Advanced filtering by date range, product, or location
+- [ ] AI-generated feedback summaries from review text
+- [ ] Churn prediction using machine learning models
+- [ ] Multi-user teams with role-based access (admin vs. analyst)
+- [ ] CI/CD pipeline and cloud deployment (AWS + Docker Compose)
 
-Muhammad Abdullah Asim
+---
+
+## 👤 Author
+
+**Muhammad Abdullah Asim**  
 Computer Science, Western University (Class of 2028)
 
-LinkedIn: linkedin.com/in/mabdullahasim
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-mabdullahasim-blue?logo=linkedin)](https://linkedin.com/in/mabdullahasim)
+
+---
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
