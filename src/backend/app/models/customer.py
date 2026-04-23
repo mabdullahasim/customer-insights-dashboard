@@ -1,7 +1,8 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, Float
+from sqlalchemy import Column, Integer, String, DateTime, Numeric, ForeignKey, UniqueConstraint, Index
+from sqlalchemy.orm import relationship # allows you to define relationships between models
 from app.core.database import Base
 from datetime import datetime
-from sqlalchemy.orm import relationship
+
 class Customer(Base):
     __tablename__ = "customers"
     id = Column(Integer, primary_key=True, index=True)
@@ -17,11 +18,17 @@ class Customer(Base):
 
     # optional rating (1-5).
     review_score = Column(Integer, nullable=True)
+
+    # ML fields
+    review_text = Column(String, nullable=True)  #written review from CSV
+    sentiment_score = Column(Numeric(4, 3), nullable=True)  #computed from review_text (0.0 - 1.0)
+    segment = Column(String, nullable=True) #computed by segmentation model e.g. "high_value"
+    churn_risk = Column(Numeric(4, 3), nullable=True)  # computed by churn model (0.0 - 1.0)
+
     # bookkeeping
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
-    # (optional) relationship back to User if you have it defined
-    # user = relationship("User", back_populates="customers")
+
     __table_args__ = (
         # allow same email in different accounts, but unique within one account
         UniqueConstraint("user_id", "email", name="uq_customers_user_email"),
