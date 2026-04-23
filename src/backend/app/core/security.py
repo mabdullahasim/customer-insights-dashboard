@@ -6,8 +6,8 @@ from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from dotenv import load_dotenv
 import os
-from app.schemas.user import UserInDB, User, Token
-from app.models.user import User
+from app.schemas.user import UserInDB
+from app.models.user import User as UserModel
 from app.core.database import get_db
 from pydantic import BaseModel
 from password_validator import PasswordValidator
@@ -44,7 +44,7 @@ def get_user(db: Session, username: str) -> UserInDB | None:
     # --> UserInDB : None (returns pydantic object if found otherwise none)
 
     # Query the DB for a user with this username
-    db_user = db.query(User).filter(User.username == username).first()
+    db_user = db.query(UserModel).filter(UserModel.username == username).first()
     
     # If user exists, return as a Pydantic object
     if db_user:
@@ -53,9 +53,9 @@ def get_user(db: Session, username: str) -> UserInDB | None:
     return None
 
 def get_user_by_email(db: Session, email: str) -> UserInDB | None:
-    db_user = db.query(User).filter(User.email == email).first()
+    db_user = db.query(UserModel).filter(UserModel.email == email).first()
 
-     if not db_user:
+    if not db_user:
         return None
 
     return UserInDB.from_orm(db_user)
@@ -106,7 +106,8 @@ async def get_current_user(token: str = Depends(oauth_2_scheme), db: Session = D
     user = get_user(db, username=username)
     if user is None:
         raise credentials_exception
-    return user
+
+    return UserInDB.model_validate(user)
 
 
 async def get_current_active_user(current_user: UserInDB = Depends(get_current_user)):
