@@ -56,4 +56,5 @@ frontend/dist/
 # -----------------
 nextsteps.txt
 *.bak
-*.tmp
+*.tmpsrc/backend/nextsteps.txt
+src/backend/ProjectNotes.txt
