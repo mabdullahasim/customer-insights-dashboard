@@ -1,18 +1,17 @@
 from pydantic import BaseModel, field_validator
 import re
 
-class UserInDB(BaseModel):
-    username: str
-    email: str
-    hashed_password: str
-
-    model_config = {"from_attributes": True}
-
 class User(BaseModel):
+    id: int 
     username: str
     email: str
     role: str
     is_active: bool
+
+    model_config = {"from_attributes": True}
+
+class UserInDB(User):
+    hashed_password: str
 
     model_config = {"from_attributes": True}
 
@@ -30,7 +29,7 @@ class UserCreate(BaseModel):
 class UserRead(BaseModel):
     username: str
     email: str
-    is_avtive: bool
+    is_active: bool
 
 class UserUpdate(BaseModel):
     username: str
@@ -41,3 +40,7 @@ class UserUpdate(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+class ForgotPassword(BaseModel):
+    email: str
+    password: str
