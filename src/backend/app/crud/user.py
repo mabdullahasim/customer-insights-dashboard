@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from app.schemas.user import UserCreate
-from app.models.user import User as UserModeL
-from app.core.security import get_user
-async def create_user(db: Session, user_in: UserCreate, hashed_password: str) -> UserModeL:
+from app.models.user import User
+from app.core.security import UserModel, get_user
+async def create_user(db: Session, user_in: UserCreate, hashed_password: str) -> User:
     new_user = User(
         username=user_in.username,
         email=user_in.email,
@@ -17,11 +17,10 @@ async def create_user(db: Session, user_in: UserCreate, hashed_password: str) ->
     return new_user
 
 
-def change_password(db: Session, user_in: User, hashed_password: str) -> UserModeL:
+def change_password(db: Session, db_user: UserModel, hashed_password: str) -> User:
     db_user.hashed_password = hashed_password
-
+    db.add(db_user)
     db.commit()
-    db.refresh(user_in)
-
-    return User.from_orm(user_in)
+    db.refresh(db_user)
+    return db_user
 
