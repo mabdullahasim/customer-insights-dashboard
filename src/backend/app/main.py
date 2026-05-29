@@ -3,6 +3,7 @@ from app.api import auth
 from app.api import secure
 from app.api import customers
 from app.api import csv_parser
+from app.api import analytics
 
 from app.core.database import engine, Base
 from fastapi.middleware.cors import CORSMiddleware
@@ -26,7 +27,7 @@ app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
 app.include_router(secure.router)
 app.include_router(customers.router)
 app.include_router(csv_parser.router)
-
+app.include_router(analytics.router)
 
 # Test endpoint
 @app.get("/test")
