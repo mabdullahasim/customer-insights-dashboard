@@ -1,3 +1,6 @@
+from decimal import Decimal
+
+
 from sqlalchemy import Column, Integer, String, DateTime, Numeric, ForeignKey, UniqueConstraint, Index
 from sqlalchemy.orm import relationship # allows you to define relationships between models
 from app.core.database import Base
@@ -24,7 +27,8 @@ class Customer(Base):
     sentiment_score = Column(Numeric(4, 3), nullable=True)  #computed from review_text (0.0 - 1.0)
     segment = Column(String, nullable=True) #computed by segmentation model e.g. "high_value"
     churn_risk = Column(Numeric(4, 3), nullable=True)  # computed by churn model (0.0 - 1.0)
-
+    confidence_label = Column(String, nullable=True) #computed by confidence label model e.g. "high_confidence"
+    confidence_score = Column(Numeric(3, 2), nullable=True) #computed by confidence score model (0.0 - 1.0)
     # bookkeeping
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
