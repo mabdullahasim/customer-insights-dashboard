@@ -31,7 +31,7 @@ async def data_import(file: UploadFile, user_id: int, db: Session):
             "country":            row["country"].strip() or None,
             "total_spent":        float(row["total_spent"].replace("$", "").replace(",", "")) if row["total_spent"].strip() else 0,
             "last_purchase_date": row["last_purchase_date"].strip() or None,
-            "review_score":       int(row["review_score"]) if row["review_score"].strip() else None,
+            "review_score": int(float(row["review_score"])) if row["review_score"].strip() else None,
             "review_text":        row["review_text"].strip() or None,
         })
 
