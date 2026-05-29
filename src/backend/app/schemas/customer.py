@@ -35,6 +35,8 @@ class CustomerRead(BaseModel):
     sentiment_score: Optional[Decimal]
     segment: Optional[str]
     churn_risk: Optional[Decimal]
+    conficence_label: Optional[str]
+    confidence_score: Optional[Decimal]
     created_at: datetime
     updated_at: datetime
     model_config = {"from_attributes": True}
@@ -47,7 +49,8 @@ class CustomerUpdate(BaseModel):
     last_purchase_date: Optional[datetime] = None
     review_score: Optional[int] = None
     review_text: Optional[str] = None
-
+    confidence_label: Optional[str] = None
+    confidence_score: Optional[float] = None
     sentiment_score: Optional[float] = None
     segment: Optional[str] = None
     churn_risk: Optional[float] = None
