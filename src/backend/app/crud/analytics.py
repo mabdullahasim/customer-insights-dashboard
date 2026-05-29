@@ -1,6 +1,7 @@
 import nltk
 nltk.download("vader_lexicon")
 from nltk.sentiment import SentimentIntensityAnalyzer
+from transformers import pipeline as hf_pipeline
 from sqlalchemy.orm import Session
 from app.schemas.analytics import *
 from app.models.customer import *
@@ -9,6 +10,11 @@ from sqlalchemy import func
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 
+sia = SentimentIntensityAnalyzer()
+classifier = hf_pipeline(
+    task="sentiment-analysis",
+    model="distilbert-base-uncased-finetuned-sst-2-english"
+) #models loaded at the top so they are not loaded on every request
 
 async def get_summary(db: Session, user_id: int) -> AnalyticsSummary:
     total_customers = customer_count(db, user_id)
@@ -148,25 +154,54 @@ async def get_review_score_distribution(db: Session, user_id: int) -> list[Revie
         for row in rows  #one CustomerFeaturesRow built per customer
     ]
 
+
+def get_distilbert_score(text: str) -> float:
+    result = classifier(text, truncation=True, max_length=512)
+    label = result[0]["label"]
+    score = result[0]["score"]
+    if label == "POSITIVE":
+        return score
+    elif label == "NEGATIVE":
+        return -score
+    else:
+        return 0.0
+
+def compute_satisfaction(review_text, review_score):
+    has_text = review_text is not None and str(review_text).strip() != ""
+    has_rating = review_score is not None
+
+    if has_text and has_rating:
+        distilbert_score = get_distilbert_score(review_text)
+        rating_score = (review_score - 3) / 2
+        satisfaction = (0.5 * distilbert_score) + (0.5 * rating_score)
+        return round(satisfaction, 3), "high", 1.0
+
+    elif has_rating and not has_text:
+        rating_score = (review_score - 3) / 2
+        return round(rating_score, 3), "low", 0.25
+
+    else:
+        return None, None, None
+
 async def sentiment_analysis(db: Session, user_id: int) -> Message:
-    sia = SentimentIntensityAnalyzer()
     customers = (
         db.query(Customer)
-        .filter(Customer.user_id == user_id)  # fetch all customers belonging to this user
+        .filter(Customer.user_id == user_id)
         .all()
     )
+
     for customer in customers:
-        if customer.review_text is not None:
-            text_score = sia.polarity_scores(customer.review_text)["compound"]
-        else:
-            text_score = 0
-        if customer.review_score is not None:
-            rating_score = (customer.review_score - 3) / 2
-        else:
-            rating_score = 0
-        sentiment = 0.7 * text_score + 0.3 * rating_score
-        customer.sentiment_score = sentiment
-    return Message(message="Sentiment analysis completed")
+        satisfaction, confidence_label, confidence_score = compute_satisfaction(
+            customer.review_text,
+            customer.review_score
+        )
+        customer.sentiment_score = satisfaction
+        customer.confidence_label = confidence_label
+        customer.confidence_score = confidence_score
+
+    db.commit()
+
+    return Message(message=f"Sentiment analysis completed for {len(customers)} customers")
 
 async def segmentation(db: Session, user_id: int) -> Message:
     return Message(message="Segmentation completed")
