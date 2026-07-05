@@ -85,6 +85,11 @@ async def run_churn(current_user=Depends(get_current_active_user), db: Session=D
     return await churn(db, current_user.id)
 
 
+@router.post("/run-churn-prediction", response_model=Message)
+async def run_churn_prediction(current_user=Depends(get_current_active_user), db: Session=Depends(get_db)):
+    """Trigger churn prediction calculation for all customers."""
+    return await churn_prediction(db, current_user.id)
+
 @router.post("/run-all", response_model=Message)
 async def run_all(current_user=Depends(get_current_active_user), db: Session=Depends(get_db)):
     """Trigger all ML pipeline jobs sequentially for the authenticated user."""
