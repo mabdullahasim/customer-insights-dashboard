@@ -1,5 +1,30 @@
+"""
+user.py (model)
+===============
+SQLAlchemy ORM model for the users table.
+
+Defines the schema for user accounts, including authentication fields
+and account status. This model is used by the auth and user routers
+for login, registration, and password management.
+
+Table: users
+
+Columns:
+  id              - Primary key, auto-incremented integer
+  username        - Non-nullable display name and login identifier
+  email           - Unique, non-nullable email address
+  role            - Account role string (e.g. "user", "admin")
+  hashed_password - Bcrypt-hashed password; plaintext is never stored
+  is_active       - Boolean flag; False disables access via get_current_active_user
+
+Dependencies:
+  - SQLAlchemy
+  - Internal: app.core.database.Base
+"""
+
 from sqlalchemy import Column, Integer, String, Boolean
 from app.core.database import Base
+
 
 class User(Base):
     __tablename__ = "users"
