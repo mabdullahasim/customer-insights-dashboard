@@ -1,27 +1,32 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
-import RequireAuth from "./api/Auth/RequireAuth";
 import Analytics from "./pages/Analytics";
 import Reports from "./pages/Reports";
 import DataUpload from "./pages/DataUpload";
 import Settings from "./pages/Settings";
+import RequireAuth from "./api/Auth/RequireAuth";
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* <Route element = {<RequireAuth/>}> for protected routes requiring auth */}
-          <Route path= "/dashboard" element = {<Dashboard/>} />
-        {/* </Route> */}
-        <Route path="/reports" element = {<Reports/>} />
-        <Route path="/settings" element ={<Settings/>} />
-        <Route path="/uploads" element={<DataUpload/>}/>
-        <Route path="/analytics" element = {<Analytics/>} />
+        {/* Public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/" element={<Login />} />
+
+        {/* Protected routes */}
+        <Route element={<RequireAuth />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/uploads" element={<DataUpload />} />
+          <Route path="/settings" element={<Settings />} />
+        </Route>
+
+        {/* Default redirect */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>
   );

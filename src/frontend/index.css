@@ -1,5 +1,7 @@
-body{
+@import './tokens.css';
+
+body {
   margin: 0;
-  height: 100vh;
-  background: linear-gradient(#2A00B7, #42006C);
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
 }
