@@ -1,5 +1,321 @@
-.container{
+/* ── Base layout ── */
+.container {
   margin: 0;
-  height: 100vh;
-  background: var(--body-color);
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.main {
+  margin-left: 250px;
+  padding: 88px 34px 44px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.loading {
+  margin-left: 250px;
+  padding: 88px 34px;
+  color: var(--muted);
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ── Summary cards grid ── */
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+/* ── Base card ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cardLabel {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* ── Icon chips (38x38 tinted squares) ── */
+.cardIcon {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cardIconAccent {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.cardIconPositive {
+  background: var(--pos-soft);
+  color: var(--positive);
+}
+
+.cardIconWarning {
+  background: var(--warn-soft);
+  color: var(--warning);
+}
+
+.cardIconDanger {
+  background: var(--dan-soft);
+  color: var(--danger);
+}
+
+/* ── Card values & captions ── */
+.cardValue {
+  font-size: 30px;
+  font-weight: 600;
+  color: var(--heading);
+  margin-top: 14px;
+  line-height: 1;
+}
+
+.cardCaption {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-top: 9px;
+}
+
+.captionPositive {
+  font-size: 12.5px;
+  color: var(--positive);
+  margin-top: 9px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ── Middle row: chart + stat column ── */
+.middleRow {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* ── Chart card ── */
+.chartHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.chartTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--heading);
+}
+
+.chartSubtitle {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.legendRow {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.legendDot {
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.chartContainer {
+  height: 320px;
+  margin-top: 14px;
+  position: relative;
+}
+
+/* ── Stat column (right side) ── */
+.statColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.statCard {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.statHeader {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.statValueRow {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.statBigValue {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--heading);
+}
+
+.statUnit {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ── Progress bars ── */
+.progressTrack {
+  margin-top: 12px;
+  height: 8px;
+  background: var(--track);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.progressFillWarning {
+  background: var(--warning);
+}
+
+.progressFillPositive {
+  background: var(--positive);
+}
+
+/* ── Churn link ── */
+.churnLink {
+  font-size: 12.5px;
+  color: var(--accent);
+  margin-top: auto;
+  padding-top: 12px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+}
+
+.churnLink:hover {
+  text-decoration: underline;
+}
+
+/* ── Top countries section ── */
+.countriesTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--heading);
+  margin-bottom: 18px;
+}
+
+.countriesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.countryTile {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.countryHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.countryName {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--heading);
+}
+
+.countryRank {
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.countryCount {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.countryRevenue {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--heading);
+  margin-top: 14px;
+}
+
+.countryBar {
+  margin-top: 12px;
+  height: 7px;
+  background: var(--track);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.countryBarFill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transition: width 0.4s ease;
+}
+.progressFillDanger {
+  background: var(--danger);
 }
