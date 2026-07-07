@@ -19,7 +19,7 @@ Dependencies:
 """
 
 from app.models.user import User
-from backend.app.schemas.user import ForgotPassword
+from app.schemas.user import ForgotPassword
 from fastapi import APIRouter, status, Depends, HTTPException
 from app.core.security import get_user_by_email, get_password_hash
 from sqlalchemy.orm import Session
@@ -33,7 +33,7 @@ from app.core.security import get_current_active_user
 router = APIRouter(prefix="/users", tags=["users"])
 
 
-@router.post("/forgotPassword", response_model=User, status_code=status.HTTP_200_ok)
+@router.post("/forgotPassword", response_model=User, status_code=status.HTTP_200_OK)
 async def forgotPassword(user_in: ForgotPassword, db: Session = Depends(get_db)):
     """
     Reset the password for a user identified by their email address.
