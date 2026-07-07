@@ -58,3 +58,24 @@ nextsteps.txt
 *.bak
 *.tmpsrc/backend/nextsteps.txt
 src/backend/ProjectNotes.txt
+
+# -----------------
+# Data files
+# -----------------
+*.csv
+
+# -----------------
+# ML model artifacts
+# -----------------
+*.pkl
+*.joblib
+
+# -----------------
+# Jupyter
+# -----------------
+.ipynb_checkpoints/
+
+# -----------------
+# NLTK
+# -----------------
+nltk_data/
