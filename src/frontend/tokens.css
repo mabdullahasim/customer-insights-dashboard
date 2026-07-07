@@ -1,0 +1,75 @@
+/* ============================================================================
+   Customer Insights Dashboard — Design Tokens
+   Drop into your global stylesheet (e.g. src/styles/theme.css) and import once
+   at app root. Theme is switched by setting  data-theme="light" | "dark"  on
+   the <html> element. Every value below is used verbatim by the prototypes.
+   ============================================================================ */
+
+:root,
+:root[data-theme="light"] {
+  /* Surfaces */
+  --bg: #E4E9F7;          /* app background */
+  --sidebar: #ffffff;     /* fixed left sidebar */
+  --card: #ffffff;        /* card / panel surface */
+  --input: #f4f6fc;       /* input field fill */
+  --track: #eef0f8;       /* progress-bar / bar-chart track, subtle fills */
+  --row-hover: #f7f8fd;   /* table row hover */
+
+  /* Brand */
+  --accent: #695CFE;      /* primary purple */
+  --accent-2: #8b7ffe;    /* gradient partner */
+  --accent-soft: #ece9ff; /* tinted accent background (icon chips, active nav soft) */
+
+  /* Text */
+  --heading: #1b1b2f;     /* headings, primary values */
+  --text: #707070;        /* body text (spec token) */
+  --muted: #a2a2b4;       /* secondary / captions / axis ticks */
+
+  /* Lines */
+  --border: #e7e9f2;
+
+  /* Status */
+  --positive: #16a34a;  --pos-soft: #e4f7ec;
+  --warning:  #d98200;  --warn-soft: #fbf0dc;
+  --danger:   #dc2626;  --dan-soft: #fbe4e4;
+
+  /* Elevation */
+  --shadow: 0 6px 24px rgba(105, 92, 254, 0.08);
+}
+
+:root[data-theme="dark"] {
+  --bg: #29292A;
+  --sidebar: #1a1d29;
+  --card: #21232f;
+  --input: #1b1d27;
+  --track: #2f313c;
+  --row-hover: #282a37;
+
+  --accent: #4f46e5;
+  --accent-2: #6d64f0;
+  --accent-soft: #2b2a48;
+
+  --heading: #f0f6fc;
+  --text: #c9d1d9;
+  --muted: #8b939f;
+
+  --border: #33353f;
+
+  --positive: #4ade80;  --pos-soft: #16321f;
+  --warning:  #fbbf24;  --warn-soft: #3a2e12;
+  --danger:   #f87171;  --dan-soft: #3a1f1f;
+
+  --shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* ----------------------------------------------------------------------------
+   Non-token scales used consistently across the prototypes
+   ----------------------------------------------------------------------------
+   Font family : 'Poppins', sans-serif  (weights 300/400/500/600/700)
+   Radii       : chips/icons 11–14px · cards 18px · inputs 11px · pills 999px
+   Card padding: 22–26px
+   Grid gap    : 20px (card grids) · 18–22px (inner)
+   Sidebar     : fixed, 250px wide, full height, 1px right border
+   Content     : margin-left 250px; header sticky top; main padding 28px 34px
+   Shadows use --shadow. Purple CTA buttons add: 0 6px 14px rgba(105,92,254,.3)
+---------------------------------------------------------------------------- */
