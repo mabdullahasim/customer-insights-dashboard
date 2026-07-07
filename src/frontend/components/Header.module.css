@@ -1,111 +1,204 @@
 .header {
-  display: flex;
-  align-items: center;
-  position: absolute;
-  gap: 10px;
-  width: 100vw;
+  position: sticky;
   top: 0;
-  left: 0;
-  padding: 30px 10px 0 40px;
-  box-sizing: border-box;
-}
-
-/* NEW: a flexible middle region that can grow between greeting and notifications */
-.searchRegion {
+  z-index: 30;
+  margin-left: 250px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  background-color: #29292A;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 34px;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+.titleArea { line-height: 1.1; }
+
+.title {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--heading);
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* ── Search pill ── */
+.searchWrap {
+  display: flex;
+  align-items: center;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 999px;
+  padding: 0 6px 0 14px;
+  height: 44px;
   overflow: hidden;
-
-  /* collapsed state: only the search icon is visible */
-  max-width: 40px;
-  padding: 4px 8px;
-  transition: max-width 0.35s ease, padding 0.25s ease;
-  flex: 1 1 auto; /* lets it expand horizontally between left text and right icon */
+  transition: width 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow);
 }
 
-/* when expanded, allow it to grow to fill the available space up to notifications */
-.expanded {
-  max-width: 400px; /* effectively “full width” within header */
-  padding: 4px 12px;
-}
-
-/* the icon sits on the left and is clickable */
 .searchIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  background-color: var(--icon-color);
-  cursor: pointer;
-  flex: 0 0 auto;
-  transition: transform 0.25s ease;
-  border: 1px solid rgba(127, 127, 133, 0.5);
-  border-radius: 8px;
-  margin-left: auto;
+  flex-shrink: 0;
+  color: var(--muted);
 }
 
-/* remove absolute centering from your old wrapper */
-.searchBarWrapper {
-  position: static;   /* reset from absolute */
-  transform: none;    /* reset */
-  display: contents;  /* let children flow in the flex row */
-}
-
-/* the input grows from 0 to 100% width smoothly */
 .searchInput {
-  height: 30px;
   border: none;
   outline: none;
-  color: #E6E6E6;
-  background: var(--icon-color);
+  background: transparent;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--heading);
+  flex: 1;
+  padding: 0 8px;
+  min-width: 0;
+}
+
+.searchBtn {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border: none;
   border-radius: 999px;
-
-  width: 0;            /* collapsed */
-  opacity: 0;
-  padding: 0;
-  transition: width 0.35s ease, opacity 0.25s ease, padding 0.25s ease;
-}
-
-/* expanded width */
-.expanded .searchInput {
-    width: 260px;        /* how wide you want it */
-    opacity: 1;
-    padding: 4px 5px;
-}
-
-/* right side button (notifications) stays fixed size */
-.iconButton {
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  border-radius: 10px;
-  height: 30px;
-  width: 30px;
-  background-color: #29292A;
-  border: none;
+}
+
+/* ── Notifications ── */
+.notifBtn {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
   cursor: pointer;
-}
-
-.header p {
-  font-size: 20px;
-  font-weight: 700;
-  margin-left: 50px;
-  flex: 0 0 auto;
-}
-
-.notifications {
-  width: 30px;
-  background-color: var(--icon-color);
-  border: 1px solid rgba(127, 127, 133, 0.5);
-  border-radius: 8px;
-}
-.iconGroup {
-  margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  box-shadow: var(--shadow);
+}
+
+.notifDot {
+  position: absolute;
+  top: 9px;
+  right: 10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--danger);
+  border: 2px solid var(--card);
+}
+
+.notifDrop {
+  position: absolute;
+  top: 54px;
+  right: 0;
+  width: 320px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.22);
+  padding: 8px;
+  z-index: 60;
+}
+
+.notifTitle {
+  padding: 12px 14px;
+  font-weight: 600;
+  color: var(--heading);
+  font-size: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.notifItem {
+  display: flex;
+  gap: 11px;
+  padding: 12px 14px;
+}
+
+.notifChip {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notifChipDanger {
+  background: var(--dan-soft);
+  color: var(--danger);
+}
+
+.notifChipPositive {
+  background: var(--pos-soft);
+  color: var(--positive);
+}
+
+.notifChipAccent {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.notifText {
+  font-size: 13px;
+  color: var(--heading);
+  font-weight: 500;
+}
+
+.notifTime {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* ── User chip ── */
+.userChip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 6px;
+}
+
+.userAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.userInfo { line-height: 1.2; }
+
+.userName {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--heading);
+}
+
+.userRole {
+  font-size: 12px;
+  color: var(--muted);
 }

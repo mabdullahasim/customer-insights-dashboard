@@ -1,85 +1,83 @@
-import styles from "./Nav.module.css";
-import React from "react";
-import "boxicons/css/boxicons.min.css";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "../components/useTheme";
-import { useNavigate} from "react-router-dom";
+import styles from "./Nav.module.css";
+import {
+  LayoutDashboard,
+  BarChart3,
+  FileText,
+  Upload,
+  Settings,
+  Sun,
+  Moon,
+  LogOut,
+  TrendingUp,
+} from "lucide-react";
+
+const navItems = [
+  { to: "/dashboard", label: "Dashboard", Icon: LayoutDashboard },
+  { to: "/analytics", label: "Analytics", Icon: BarChart3 },
+  { to: "/reports", label: "Reports", Icon: FileText },
+  { to: "/uploads", label: "Upload", Icon: Upload },
+  { to: "/settings", label: "Settings", Icon: Settings },
+];
+
 const Nav = () => {
-    const { theme, toggleTheme } = useTheme();
-    const navigate = useNavigate();
-    function handleLogout(e: React.MouseEvent) {
-        e.preventDefault();
-        localStorage.removeItem("token");
-        navigate("/login", { replace: true });
-    }
-    return(
-        <>
-            <nav className= {styles.sidebar}>
-                <header>
-                    <div className={styles.imageText}>
-                        <span className ={styles.image}>
-                            <img src="" alt ="logo"></img>
-                        </span>
-                        <div className={styles.headerText}>
-                            <span className={styles.name}>Dashboard</span>
-                        </div>
-                    </div>
-                    <i className={`bx bx-chevron-right ${styles.toggle}`}></i>
-                </header>
-                <div className={styles.menuBar}>
-                    <div className={styles.menu}>
-                         <aside className={styles.links}>
-                            <NavLink className={styles.navLink} to="/dashboard">
-                                <i className ={`bx  bx-home ${styles.icons}`}  ></i>
-                                <span className={styles.text}>Dashboard</span>
-                            </NavLink>
-                            <NavLink className={styles.navLink} to="/analytics">
-                                 <i className ={`bx bx-line-chart  ${styles.icons}`}  ></i>
-                                 <span className={styles.text}>Analytics</span>
-                            </NavLink>
-                            <NavLink className={styles.navLink} to="/reports">
-                                <i className ={`bx bx-download ${styles.icons}`} > </i>
-                                <span className={styles.text}>Reports</span>
-                            </NavLink>
-                            <NavLink className={styles.navLink} to="/uploads">
-                                <i className ={`bx bx-upload ${styles.icons}`}> </i>
-                                <span className={styles.text}>Upload</span>
-                            </NavLink>
-                            <NavLink className={styles.navLink} to="/settings">
-                                <i className ={`bx  bx-cog ${styles.icons}`}> </i>
-                                <span className={styles.text}>Settings</span>
-                            </NavLink>
-                        </aside>
-                    </div>
-                </div>
-                <div className={styles.bottomContent}>
-                    <NavLink className={styles.navLink} to="" onClick={handleLogout}>
-                                <i className ={`bx bx-log-out ${styles.icons}`}> </i>
-                                <span className={styles.text}>Logout</span>
-                    </NavLink>
-                    <NavLink className= {` ${styles.navLink} ${styles.mode} `}to="">
-                        <div className={styles.moonSun}>
-                            <i className ={`bx bx-moon ${styles.icons} ${styles.moon}`}> </i>
-                            <i className ={`bx bx-sun ${styles.icons} ${styles.sun}`}> </i>
-                        </div>
-                        <span className={styles.text}>
-                            {theme === "light" ? "Light Mode" : "Dark Mode"}
-                        </span>
-                        <div className={styles.toggleSwitch} onClick={(e) => { e.preventDefault(); toggleTheme(); }}>
-                            <span className={styles.switch}></span>
-                        </div>
-                    </NavLink>
-                </div>
-            </nav>
-        
-        
-        
-        
-        
-        </>
-    );
+  const { theme, toggleTheme } = useTheme();
+  const navigate = useNavigate();
+  const location = useLocation();
 
+  function handleLogout(e: React.MouseEvent) {
+    e.preventDefault();
+    localStorage.removeItem("token");
+    navigate("/login", { replace: true });
+  }
 
+  return (
+    <aside className={styles.sidebar}>
+      {/* Brand */}
+      <NavLink to="/dashboard" className={styles.brand}>
+        <div className={styles.brandIcon}>
+          <TrendingUp size={22} color="#fff" strokeWidth={2.2} />
+        </div>
+        <div>
+          <div className={styles.brandName}>Insightly</div>
+          <div className={styles.brandSub}>CUSTOMER INSIGHTS</div>
+        </div>
+      </NavLink>
 
+      {/* Menu label */}
+      <div className={styles.menuLabel}>MENU</div>
+
+      {/* Nav links */}
+      <nav className={styles.nav}>
+        {navItems.map(({ to, label, Icon }) => {
+          const active = location.pathname === to;
+          return (
+            <NavLink
+              key={to}
+              to={to}
+              className={`${styles.navLink} ${active ? styles.navLinkActive : ""}`}
+            >
+              <Icon size={19} />
+              <span>{label}</span>
+            </NavLink>
+          );
+        })}
+      </nav>
+
+      {/* Footer */}
+      <div className={styles.footer}>
+        <button className={styles.themeBtn} onClick={toggleTheme}>
+          {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+          <span>{theme === "dark" ? "Light mode" : "Dark mode"}</span>
+        </button>
+        <a href="#" className={styles.logoutLink} onClick={handleLogout}>
+          <LogOut size={18} />
+          <span>Log out</span>
+        </a>
+      </div>
+    </aside>
+  );
 };
+
 export default Nav;
