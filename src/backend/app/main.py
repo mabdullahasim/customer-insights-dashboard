@@ -28,6 +28,7 @@ from app.api import secure
 from app.api import customers
 from app.api import csv_parser
 from app.api import analytics
+from app.api import users
 from app.core.database import engine, Base
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -46,7 +47,7 @@ app.add_middleware(
 
 Base.metadata.create_all(bind=engine)
 
-
+app.include_router(users.router)
 app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
 app.include_router(secure.router)
 app.include_router(customers.router)
